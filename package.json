@@ -12,16 +12,22 @@
     "migrate": "node-pg-migrate",
     "migrate:test": "node-pg-migrate -f config/database/test.json"
   },
-  "keywords": ["clean architecture", "automated testing", "tdd"],
+  "keywords": [
+    "clean architecture",
+    "automated testing",
+    "tdd"
+  ],
   "author": "Rickyslash",
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^20.1.5",
     "@hapi/jwt": "^2.0.1",
     "bcrypt": "^5.0.1",
+    "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "instances-container": "^2.0.3",
     "nanoid": "^3.1.23",
+    "newman": "^6.2.1",
     "pg": "^8.6.0"
   },
   "devDependencies": {
