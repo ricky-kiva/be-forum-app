@@ -1,4 +1,5 @@
 node_modules
+postman
 package-lock.json
 .idea
 config/database/test.json
