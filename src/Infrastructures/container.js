@@ -6,23 +6,25 @@ const { createContainer } = require('instances-container');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const Jwt = require('@hapi/jwt');
+
+// infrastructures
+const UserRepositoryPostgres = require('./repository/UserRepositoryPostgres');
+const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
+const BcryptPasswordHash = require('./security/BcryptPasswordHash');
+const JwtTokenManager = require('./security/JwtTokenManager');
 const pool = require('./database/postgres/pool');
 
-// service (repository, helper, manager, etc)
-const UserRepository = require('../Domains/users/UserRepository');
-const PasswordHash = require('../Applications/security/PasswordHash');
-const UserRepositoryPostgres = require('./repository/UserRepositoryPostgres');
-const BcryptPasswordHash = require('./security/BcryptPasswordHash');
-
-// use case
+// applications
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase');
-const AuthenticationTokenManager = require('../Applications/security/AuthenticationTokenManager');
-const JwtTokenManager = require('./security/JwtTokenManager');
 const LoginUserUseCase = require('../Applications/use_case/LoginUserUseCase');
-const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
-const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
 const LogoutUserUseCase = require('../Applications/use_case/LogoutUserUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAuthenticationUseCase');
+const AuthenticationTokenManager = require('../Applications/security/AuthenticationTokenManager');
+const PasswordHash = require('../Applications/security/PasswordHash');
+
+// domains
+const UserRepository = require('../Domains/users/UserRepository');
+const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
 
 // creating container
 const container = createContainer();
@@ -34,12 +36,8 @@ container.register([
     Class: UserRepositoryPostgres,
     parameter: {
       dependencies: [
-        {
-          concrete: pool,
-        },
-        {
-          concrete: nanoid,
-        },
+        { concrete: pool },
+        { concrete: nanoid },
       ],
     },
   },
@@ -48,9 +46,7 @@ container.register([
     Class: AuthenticationRepositoryPostgres,
     parameter: {
       dependencies: [
-        {
-          concrete: pool,
-        },
+        { concrete: pool },
       ],
     },
   },
@@ -59,9 +55,7 @@ container.register([
     Class: BcryptPasswordHash,
     parameter: {
       dependencies: [
-        {
-          concrete: bcrypt,
-        },
+        { concrete: bcrypt },
       ],
     },
   },
@@ -70,9 +64,7 @@ container.register([
     Class: JwtTokenManager,
     parameter: {
       dependencies: [
-        {
-          concrete: Jwt.token,
-        },
+        { concrete: Jwt.token },
       ],
     },
   },
