@@ -1,4 +1,4 @@
-const ThreadTableTestHelper = require('../../../../tests/ThreadTableTestHelper');
+const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const pool = require('../../database/postgres/pool');
 const ThreadPayload = require('../../../Domains/threads/entities/ThreadPayload');
@@ -7,7 +7,7 @@ const ThreadEntity = require('../../../Domains/threads/entities/ThreadEntity');
 
 describe('ThreadRepositoryPostgres', () => {
   afterEach(async () => {
-    await ThreadTableTestHelper.cleanTable();
+    await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
   });
 
