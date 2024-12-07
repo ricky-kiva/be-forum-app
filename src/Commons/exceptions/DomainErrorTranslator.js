@@ -17,6 +17,9 @@ DomainErrorTranslator._directories = {
   'REFRESH_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token harus string'),
   'DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN': new InvariantError('harus mengirimkan token refresh'),
   'DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token harus string'),
+  'THREAD_PAYLOAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti payload thread kurang'),
+  'THREAD_PAYLOAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe properti data payload thread tidak sesuai'),
+  'THREAD_PAYLOAD.TITLE_LIMIT_CHAR': new InvariantError('karakter judul thread melebihi batas limit'),
 };
 
 module.exports = DomainErrorTranslator;
