@@ -1,6 +1,7 @@
 const ThreadCommentEntity = require('../../../Domains/thread_comments/entities/ThreadCommentEntity');
 const ThreadCommentPayload = require('../../../Domains/thread_comments/entities/ThreadCommentPayload');
 const ThreadCommentRepository = require('../../../Domains/thread_comments/ThreadCommentRepository');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const AddThreadCommentUseCase = require('../AddThreadCommentUseCase');
 
 describe('AddThreadCommentUseCase', () => {
@@ -21,12 +22,17 @@ describe('AddThreadCommentUseCase', () => {
     });
 
     const mockThreadCommentRepository = new ThreadCommentRepository();
+    const mockThreadRepository = new ThreadRepository();
+
+    mockThreadRepository.verifyThreadExists = jest.fn()
+      .mockImplementation(() => Promise.resolve());
 
     mockThreadCommentRepository.addThreadComment = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadCommentEntity));
 
     const addThreadCommentUseCase = new AddThreadCommentUseCase({
       threadCommentRepository: mockThreadCommentRepository,
+      threadRepository: mockThreadRepository,
     });
 
     const threadCommentEntity = await addThreadCommentUseCase
