@@ -20,6 +20,8 @@ DomainErrorTranslator._directories = {
   'THREAD_PAYLOAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti payload thread kurang'),
   'THREAD_PAYLOAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe properti data payload thread tidak sesuai'),
   'THREAD_PAYLOAD.TITLE_LIMIT_CHAR': new InvariantError('karakter judul thread melebihi batas limit'),
+  'THREAD_COMMENT_PAYLOAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti payload thread comment kurang'),
+  'THREAD_COMMENT_PAYLOAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe properti data payload thread comment tidak sesuai'),
 };
 
 module.exports = DomainErrorTranslator;
