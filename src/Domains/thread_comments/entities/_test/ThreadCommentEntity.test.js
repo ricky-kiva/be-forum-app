@@ -15,7 +15,7 @@ describe('a ThreadCommentEntity entities', () => {
       id: 'comment-123',
       content: 123,
       owner: 'user-123',
-      threadId: 'thread-123',
+      thread: 'thread-123',
     };
 
     expect(() => new ThreadCommentEntity(payload)).toThrow('THREAD_COMMENT_ENTITY.NOT_MEET_DATA_TYPE_SPECIFICATION');
