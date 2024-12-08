@@ -1,5 +1,6 @@
 const ThreadCommentRepository = require('../../Domains/thread_comments/ThreadCommentRepository');
 const ThreadCommentEntity = require('../../Domains/thread_comments/entities/ThreadCommentEntity');
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 
 class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
   constructor(pool, idGenerator) {
@@ -26,6 +27,34 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
       ...rest,
       thread,
     });
+  }
+
+  async softDeleteThreadComment(id) {
+    const q = {
+      text: 'UPDATE thread_comments SET is_delete = $1 WHERE id = $2 RETURNING is_delete',
+      values: [true, id],
+    };
+
+    const result = await this._pool.query(q);
+
+    if (result.rows.length === 0 || !result.rows[0].is_delete) {
+      throw new Error('proses delete thread comment gagal');
+    }
+  }
+
+  async getThreadCommentOwner(id) {
+    const q = {
+      text: 'SELECT owner FROM thread_comments WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(q);
+
+    if (!result.rows.length > 0) {
+      throw new NotFoundError('thread comment tidak ditemukan');
+    }
+
+    return result.rows[0].owner;
   }
 }
 

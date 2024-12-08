@@ -23,7 +23,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
       });
 
       const idNumber = '123';
-      const fakeIdGemerator = () => idNumber;
+      const fakeIdGenerator = () => idNumber;
 
       const userId = 'user-123';
       const threadId = 'thread-123';
@@ -47,7 +47,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
 
       const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(
         pool,
-        fakeIdGemerator,
+        fakeIdGenerator,
       );
 
       await threadCommentRepositoryPostgres
@@ -57,6 +57,57 @@ describe('ThreadCommentRepositoryPostgres', () => {
         .findThreadCommentsById(`comment-${idNumber}`);
 
       expect(threadComments).toHaveLength(1);
+    });
+  });
+
+  describe('softDeleteThreadComment function', () => {
+    it('should change is_delete value of corresponding thread comment', async () => {
+      const idNumber = '123';
+      const fakeIdGenerator = () => idNumber;
+
+      const userId = 'user-123';
+      const threadId = 'thread-123';
+      const threadCommentId = 'comment-123';
+
+      const user = {
+        id: userId,
+        username: 'komodo',
+        password: 'secret',
+        fullname: 'Komodo Indonesia',
+      };
+
+      const thread = {
+        id: threadId,
+        title: 'Thread Example',
+        body: 'Thread body example',
+        owner: userId,
+      };
+
+      const threadComment = {
+        id: threadCommentId,
+        content: 'Some thread comment',
+        owner: userId,
+        thread: threadId,
+      };
+
+      await UsersTableTestHelper.addUser(user);
+      await ThreadsTableTestHelper.addThread(thread);
+      await ThreadCommentsTableTestHelper.addThreadComment(threadComment);
+
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator,
+      );
+
+      await threadCommentRepositoryPostgres
+        .softDeleteThreadComment(`comment-${idNumber}`);
+
+      const deletedThreadComment = await ThreadCommentsTableTestHelper
+        .findThreadCommentsById(threadCommentId);
+
+      const { is_delete: isDelete } = deletedThreadComment[0];
+
+      expect(isDelete).toStrictEqual(true);
     });
   });
 });

@@ -1,6 +1,19 @@
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ThreadCommentsTableTestHelper = {
+  async addThreadComment({
+    id = 'comment-123',
+    content = 'Some thread comment',
+    owner = 'user-123',
+    thread = 'thread-123',
+  }) {
+    const q = {
+      text: 'INSERT INTO thread_comments VALUES($1, $2, $3, $4)',
+      values: [id, content, owner, thread],
+    };
+
+    await pool.query(q);
+  },
   async findThreadCommentsById(id) {
     const q = {
       text: 'SELECT * FROM thread_comments WHERE id = $1',
