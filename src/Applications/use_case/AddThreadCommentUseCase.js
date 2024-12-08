@@ -1,11 +1,14 @@
 const ThreadCommentPayload = require('../../Domains/thread_comments/entities/ThreadCommentPayload');
 
 class AddThreadCommentUseCase {
-  constructor({ threadCommentRepository }) {
+  constructor({ threadCommentRepository, threadRepository }) {
     this._threadCommentRepository = threadCommentRepository;
+    this._threadRepository = threadRepository;
   }
 
   async execute(useCasePayload, credentialId, threadId) {
+    await this._threadRepository.verifyThreadExists(threadId);
+
     const threadCommentPayload = new ThreadCommentPayload(useCasePayload);
 
     return this._threadCommentRepository
