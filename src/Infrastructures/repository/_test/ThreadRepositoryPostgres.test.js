@@ -12,7 +12,7 @@ describe('ThreadRepositoryPostgres', () => {
   });
 
   afterAll(async () => {
-    await pool.end;
+    await pool.end();
   });
 
   describe('addThread function', () => {
