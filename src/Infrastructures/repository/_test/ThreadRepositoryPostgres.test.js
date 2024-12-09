@@ -46,4 +46,36 @@ describe('ThreadRepositoryPostgres', () => {
       }));
     });
   });
+
+  describe('getThreadById function', () => {
+    it('should acquire a correct single Thread', async () => {
+      const userId = 'user-123';
+      const threadId = 'thread-123';
+
+      const fakeIdGenerator = () => threadId;
+
+      const registerUser = {
+        id: userId,
+        username: 'komodo',
+        password: 'secret',
+        fullname: 'Komodo Indonesia',
+      };
+
+      const thread = {
+        id: threadId,
+        title: 'Thread Title',
+        body: 'Thread body',
+        owner: userId,
+      };
+
+      await UsersTableTestHelper.addUser(registerUser);
+      await ThreadsTableTestHelper.addThread(thread);
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+
+      const threadEntity = await threadRepositoryPostgres.getThreadById(threadId);
+
+      expect(threadEntity).toStrictEqual(new ThreadEntity(thread));
+    });
+  });
 });
