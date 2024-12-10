@@ -29,6 +29,27 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
     });
   }
 
+  async getThreadCommentsByThreadId(threadId) {
+    const q = {
+      text: 'SELECT * FROM thread_comments WHERE thread = $1',
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(q);
+
+    return result.rows.map((comment) => {
+      const { is_delete: isDelete, content, ...rest } = comment;
+
+      return new ThreadCommentEntity({
+        ...rest,
+        is_delete: isDelete,
+        content: isDelete
+          ? '**komentar telah dihapus**'
+          : content,
+      });
+    });
+  }
+
   async softDeleteThreadComment(id) {
     const q = {
       text: 'UPDATE thread_comments SET is_delete = $1 WHERE id = $2 RETURNING is_delete',

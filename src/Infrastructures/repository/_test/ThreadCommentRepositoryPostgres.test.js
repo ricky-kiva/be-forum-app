@@ -4,6 +4,7 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const pool = require('../../database/postgres/pool');
 const ThreadCommentPayload = require('../../../Domains/thread_comments/entities/ThreadCommentPayload');
 const ThreadCommentRepositoryPostgres = require('../ThreadCommentRepositoryPostgres');
+const ThreadCommentEntity = require('../../../Domains/thread_comments/entities/ThreadCommentEntity');
 
 describe('ThreadCommentRepositoryPostgres', () => {
   afterEach(async () => {
@@ -108,6 +109,81 @@ describe('ThreadCommentRepositoryPostgres', () => {
       const { is_delete: isDelete } = deletedThreadComment[0];
 
       expect(isDelete).toStrictEqual(true);
+    });
+  });
+
+  describe('getThreadCommentsByThreadId function', () => {
+    it('should return a correct value of Thread Comments', async () => {
+      const idNumbers = ['123', '124'];
+      const threadId = 'thread-123';
+
+      const usernameTemplate = (id) => `User ${id}`;
+      const passwordTemplate = (id) => `abc${id}`;
+      const fullnameTemplate = (id) => `The Legend: User ${id}`;
+      const contentTemplate = (id) => `This comment no. ${id}`;
+
+      const addThreadComments = idNumbers.map(async (idNumber, i) => {
+        const userId = `user-${idNumber}`;
+        const threadCommentId = `comment-${idNumber}`;
+
+        const user = {
+          id: userId,
+          username: usernameTemplate(idNumber),
+          password: passwordTemplate(idNumber),
+          fullname: fullnameTemplate(idNumber),
+        };
+
+        await UsersTableTestHelper.addUser(user);
+
+        if (i === 0) {
+          const thread = {
+            id: threadId,
+            title: 'Thread example',
+            body: 'Thread body example',
+            owner: userId,
+          };
+
+          await ThreadsTableTestHelper.addThread(thread);
+        }
+
+        const threadComment = {
+          id: threadCommentId,
+          content: contentTemplate(idNumber),
+          owner: userId,
+          thread: threadId,
+        };
+
+        await ThreadCommentsTableTestHelper.addThreadComment(threadComment);
+      });
+
+      await Promise.all(addThreadComments);
+
+      const runTest = idNumbers.map(async (idNumber, i) => {
+        const fakeIdGenerator = () => idNumber;
+
+        const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(
+          pool,
+          fakeIdGenerator,
+        );
+
+        if (i === (idNumbers.length - 1)) {
+          const threadCommentEntities = await threadCommentRepositoryPostgres
+            .getThreadCommentsByThreadId(threadId);
+
+          expect(threadCommentEntities).toHaveLength(idNumbers.length);
+
+          threadCommentEntities.forEach((entity, j) => {
+            expect(entity).toStrictEqual(new ThreadCommentEntity({
+              id: `comment-${idNumbers[j]}`,
+              content: contentTemplate(idNumbers[j]),
+              owner: `user-${idNumbers[j]}`,
+              thread: threadId,
+            }));
+          });
+        }
+      });
+
+      await Promise.all(runTest);
     });
   });
 });
