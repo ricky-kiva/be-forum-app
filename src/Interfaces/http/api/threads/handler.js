@@ -37,21 +37,14 @@ class ThreadsHandler {
 
     const { threadId } = req.params;
 
-    const threadEntity = await getThreadByIdResponseUseCase.execute(threadId);
+    const thread = await getThreadByIdResponseUseCase.execute(threadId);
 
     // TODO: add date to response
-    // TODO: add comments to response
     // TODO: convert user id to username in response
 
     return h.response({
       status: 'success',
-      data: {
-        thread: {
-          id: threadEntity.id,
-          title: threadEntity.title,
-          body: threadEntity.body,
-        },
-      },
+      data: thread,
     });
   }
 }
