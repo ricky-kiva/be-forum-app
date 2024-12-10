@@ -2,7 +2,7 @@ const ThreadEntity = require('../../../Domains/threads/entities/ThreadEntity');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const GetThreadByIdResponseUseCase = require('../GetThreadByIdResponseUseCase');
 
-describe('GetThreadUseCaseById', () => {
+describe('GetThreadByIdResponseUseCase', () => {
   it('should oscestrate get Thread by id action correctly', async () => {
     const threadId = 'thread-123';
 
@@ -19,7 +19,7 @@ describe('GetThreadUseCaseById', () => {
       .mockImplementation(() => Promise.resolve(mockThreadEntity));
 
     const getThreadByIdResponseUseCase = new GetThreadByIdResponseUseCase({
-      threadRepository: mockThreadEntity,
+      threadRepository: mockThreadRepository,
     });
 
     const threadEntity = await getThreadByIdResponseUseCase.execute(threadId);
