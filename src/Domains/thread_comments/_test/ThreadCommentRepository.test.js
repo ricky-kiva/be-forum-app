@@ -12,5 +12,8 @@ describe('ThreadCommentRepository interface', () => {
 
     await expect(threadCommentRepository.getThreadCommentOwner(''))
       .rejects.toThrow('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+
+    await expect(threadCommentRepository.getThreadCommentsByThreadId(''))
+      .rejects.toThrow('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });
