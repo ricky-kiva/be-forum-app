@@ -11,14 +11,25 @@ class GetThreadByIdResponseUseCase {
     const threadCommentEntities = await this._threadCommentRepository
       .getThreadCommentsByThreadId(id);
 
+    const assignThreadCommentsUsername = threadCommentEntities.map(async (comment) => {
+      const { owner, ...rest } = comment;
+      const commentator = await this._userRepository.getUsernameById(owner);
+      return {
+        ...rest,
+        username: commentator,
+      };
+    });
+
+    const comments = await Promise.all(assignThreadCommentsUsername);
+
     return {
       thread: {
         id: threadEntity.id,
         title: threadEntity.title,
         body: threadEntity.body,
         date: threadEntity.date,
-        owner: username,
-        comments: threadCommentEntities,
+        username,
+        comments,
       },
     };
   }
