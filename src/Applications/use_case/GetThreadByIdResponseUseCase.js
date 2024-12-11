@@ -14,6 +14,7 @@ class GetThreadByIdResponseUseCase {
         id: threadEntity.id,
         title: threadEntity.title,
         body: threadEntity.body,
+        date: threadEntity.date,
         comments: threadCommentEntities,
       },
     };
