@@ -122,4 +122,19 @@ describe('UserRepositoryPostgres', () => {
       expect(userId).toEqual('user-321');
     });
   });
+
+  describe('getUsernameById', () => {
+    it('should return username correctly', async () => {
+      const id = 'user-123';
+      const username = 'username';
+
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      await UsersTableTestHelper.addUser({ id, username });
+
+      const resultUsername = await userRepositoryPostgres.getUsernameById(id);
+
+      expect(resultUsername).toEqual(username);
+    });
+  });
 });
