@@ -14,7 +14,11 @@ class ThreadsHandler {
     const { id: credentialId } = req.auth.credentials;
     const date = new Date().toISOString();
 
-    const threadEntity = await addThreadUseCase.execute(req.payload, credentialId, date);
+    const threadEntity = await addThreadUseCase.execute({
+      useCasePayload: req.payload,
+      credentialId,
+      date,
+    });
 
     const res = h.response({
       status: 'success',
@@ -39,9 +43,6 @@ class ThreadsHandler {
     const { threadId } = req.params;
 
     const thread = await getThreadByIdResponseUseCase.execute(threadId);
-
-    // TODO: add date to response
-    // TODO: convert user id to username in response
 
     return h.response({
       status: 'success',

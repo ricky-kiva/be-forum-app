@@ -15,8 +15,14 @@ class ThreadCommentsHandler {
     const { id: credentialId } = req.auth.credentials;
     const { threadId } = req.params;
 
-    const threadCommentEntity = await addThreadCommentUseCase
-      .execute(req.payload, credentialId, threadId);
+    const date = new Date().toISOString();
+
+    const threadCommentEntity = await addThreadCommentUseCase.execute({
+      useCasePayload: req.payload,
+      credentialId,
+      threadId,
+      date,
+    });
 
     const res = h.response({
       status: 'success',
