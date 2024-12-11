@@ -6,13 +6,17 @@ class AddThreadCommentUseCase {
     this._threadRepository = threadRepository;
   }
 
-  async execute(useCasePayload, credentialId, threadId) {
+  async execute({
+    useCasePayload, credentialId, threadId, date,
+  }) {
     await this._threadRepository.verifyThreadExists(threadId);
 
     const threadCommentPayload = new ThreadCommentPayload(useCasePayload);
 
     return this._threadCommentRepository
-      .addThreadComment(threadCommentPayload, credentialId, threadId);
+      .addThreadComment({
+        threadCommentPayload, credentialId, threadId, date,
+      });
   }
 }
 

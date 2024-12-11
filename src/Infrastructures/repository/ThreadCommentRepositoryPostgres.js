@@ -10,22 +10,24 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
     this._idGenerator = idGenerator;
   }
 
-  async addThreadComment(threadCommentPayload, credentialId, threadId) {
+  async addThreadComment({
+    threadCommentPayload, credentialId, threadId, date,
+  }) {
     const { content } = threadCommentPayload;
     const id = `comment-${this._idGenerator()}`;
 
     const q = {
-      text: 'INSERT INTO thread_comments VALUES($1, $2, $3, $4) RETURNING id, content, owner, thread',
-      values: [id, content, credentialId, threadId],
+      text: 'INSERT INTO thread_comments VALUES($1, $2, $3, $4, DEFAULT, $5) RETURNING id, content, owner, thread, date',
+      values: [id, content, credentialId, threadId, date],
     };
 
     const result = await this._pool.query(q);
 
-    const { thread, ...rest } = result.rows[0];
+    const { thread: dbThreadId, ...rest } = result.rows[0];
 
     return new ThreadCommentEntity({
       ...rest,
-      thread,
+      thread: dbThreadId,
     });
   }
 

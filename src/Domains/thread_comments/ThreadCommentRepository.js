@@ -2,7 +2,9 @@
 /* eslint-disable no-unused-vars */
 
 class ThreadCommentRepository {
-  async addThreadComment(threadComment) {
+  async addThreadComment({
+    threadCommentPayload, credentialId, threadId, date,
+  }) {
     throw new Error('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

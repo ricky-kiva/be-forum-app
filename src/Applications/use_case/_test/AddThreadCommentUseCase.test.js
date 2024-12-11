@@ -13,12 +13,14 @@ describe('AddThreadCommentUseCase', () => {
     const threadCommentId = 'comment-123';
     const credentialId = 'user-123';
     const threadId = 'thread-123';
+    const date = 'fixed-date';
 
     const mockThreadCommentEntity = new ThreadCommentEntity({
       id: threadCommentId,
       content: useCasePayload.content,
       owner: credentialId,
       thread: threadId,
+      date,
     });
 
     const mockThreadCommentRepository = new ThreadCommentRepository();
@@ -36,15 +38,18 @@ describe('AddThreadCommentUseCase', () => {
     });
 
     const threadCommentEntity = await addThreadCommentUseCase
-      .execute(useCasePayload, credentialId, threadId);
+      .execute({
+        useCasePayload, credentialId, threadId, date,
+      });
 
     expect(threadCommentEntity).toStrictEqual(mockThreadCommentEntity);
 
     expect(mockThreadCommentRepository.addThreadComment)
-      .toHaveBeenCalledWith(
-        new ThreadCommentPayload(useCasePayload),
+      .toHaveBeenCalledWith({
+        threadCommentPayload: new ThreadCommentPayload(useCasePayload),
         credentialId,
         threadId,
-      );
+        date,
+      });
   });
 });

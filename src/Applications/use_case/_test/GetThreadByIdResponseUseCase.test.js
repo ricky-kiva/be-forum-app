@@ -8,7 +8,7 @@ describe('GetThreadByIdResponseUseCase', () => {
   it('should oscestrate get Thread by id action correctly', async () => {
     const threadId = 'thread-123';
 
-    const date = new Date().toISOString();
+    const date = 'fixed-date';
 
     const mockThreadEntity = new ThreadEntity({
       id: threadId,
@@ -24,12 +24,14 @@ describe('GetThreadByIdResponseUseCase', () => {
         content: 'Thread body 123',
         owner: 'user-123',
         thread: threadId,
+        date,
       }),
       new ThreadCommentEntity({
         id: 'comment-124',
         content: 'Thread body 124',
         owner: 'user-124',
         thread: threadId,
+        date,
       }),
     ];
 

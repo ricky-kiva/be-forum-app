@@ -26,11 +26,12 @@ describe('ThreadCommentRepositoryPostgres', () => {
       const idNumber = '123';
       const fakeIdGenerator = () => idNumber;
 
-      const userId = 'user-123';
+      const credentialId = 'user-123';
       const threadId = 'thread-123';
+      const date = 'fixed-date';
 
       const user = {
-        id: userId,
+        id: credentialId,
         username: 'komodo',
         password: 'secret',
         fullname: 'Komodo Indonesia',
@@ -40,7 +41,8 @@ describe('ThreadCommentRepositoryPostgres', () => {
         id: threadId,
         title: 'Thread Example',
         body: 'Thread body example',
-        owner: userId,
+        owner: credentialId,
+        date,
       };
 
       await UsersTableTestHelper.addUser(user);
@@ -52,7 +54,9 @@ describe('ThreadCommentRepositoryPostgres', () => {
       );
 
       await threadCommentRepositoryPostgres
-        .addThreadComment(threadCommentPayload, userId, threadId);
+        .addThreadComment({
+          threadCommentPayload, credentialId, threadId, date,
+        });
 
       const threadComments = await ThreadCommentsTableTestHelper
         .findThreadCommentsById(`comment-${idNumber}`);
@@ -116,6 +120,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
     it('should return a correct value of Thread Comments', async () => {
       const idNumbers = ['123', '124'];
       const threadId = 'thread-123';
+      const date = 'fixed-date';
 
       const usernameTemplate = (id) => `User ${id}`;
       const passwordTemplate = (id) => `abc${id}`;
@@ -141,6 +146,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
             title: 'Thread example',
             body: 'Thread body example',
             owner: userId,
+            date,
           };
 
           await ThreadsTableTestHelper.addThread(thread);
@@ -151,6 +157,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
           content: contentTemplate(idNumber),
           owner: userId,
           thread: threadId,
+          date,
         };
 
         await ThreadCommentsTableTestHelper.addThreadComment(threadComment);
@@ -178,6 +185,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
               content: contentTemplate(idNumbers[j]),
               owner: `user-${idNumbers[j]}`,
               thread: threadId,
+              date,
             }));
           });
         }
