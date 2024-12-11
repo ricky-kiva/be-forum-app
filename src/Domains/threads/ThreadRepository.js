@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 
 class ThreadRepository {
-  async addThread(threadPayload, credentialId) {
+  async addThread({ threadPayload, credentialId, date }) {
     throw new Error('THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

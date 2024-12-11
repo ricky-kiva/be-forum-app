@@ -36,13 +36,20 @@ describe('ThreadRepositoryPostgres', () => {
 
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
 
-      const threadEntity = await threadRepositoryPostgres.addThread(threadPayload, registerUser.id);
+      const date = new Date().toISOString();
+
+      const threadEntity = await threadRepositoryPostgres.addThread({
+        threadPayload,
+        credentialId: registerUser.id,
+        date,
+      });
 
       expect(threadEntity).toStrictEqual(new ThreadEntity({
         id: `thread-${threadId}`,
         title: threadPayload.title,
         body: threadPayload.body,
         owner: registerUser.id,
+        date,
       }));
     });
   });

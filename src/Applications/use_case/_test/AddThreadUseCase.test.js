@@ -12,12 +12,14 @@ describe('AddThreadUseCase', () => {
 
     const id = 'thread-123';
     const credentialId = 'user-123';
+    const date = new Date().toISOString();
 
     const mockThreadEntity = new ThreadEntity({
       id,
       title: useCasePayload.title,
       body: useCasePayload.body,
       owner: credentialId,
+      date,
     });
 
     const mockThreadRepository = new ThreadRepository();
@@ -29,11 +31,12 @@ describe('AddThreadUseCase', () => {
       threadRepository: mockThreadRepository,
     });
 
-    const threadEntity = await addThreadUseCase.execute(useCasePayload, credentialId);
+    const threadEntity = await addThreadUseCase
+      .execute({ useCasePayload, credentialId, date });
 
     expect(threadEntity).toStrictEqual(mockThreadEntity);
 
     expect(mockThreadRepository.addThread)
-      .toHaveBeenCalledWith(new ThreadPayload(useCasePayload), credentialId);
+      .toHaveBeenCalledWith(new ThreadPayload(useCasePayload), credentialId, date);
   });
 });

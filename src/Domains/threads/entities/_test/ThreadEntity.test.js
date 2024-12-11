@@ -17,6 +17,7 @@ describe('a ThreadEntity entities', () => {
       title: 123,
       body: 'abc',
       owner: 'abc',
+      date: 'abc',
     };
 
     expect(() => new ThreadEntity(payload)).toThrow('THREAD_ENTITY.NOT_MEET_DATA_TYPE_SPECIFICATION');
