@@ -36,7 +36,7 @@ describe('ThreadRepositoryPostgres', () => {
 
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
 
-      const date = new Date().toISOString();
+      const date = 'fixed-date';
 
       const threadEntity = await threadRepositoryPostgres.addThread({
         threadPayload,
@@ -73,6 +73,7 @@ describe('ThreadRepositoryPostgres', () => {
         title: 'Thread Title',
         body: 'Thread body',
         owner: userId,
+        date: 'fixed-date',
       };
 
       await UsersTableTestHelper.addUser(registerUser);
