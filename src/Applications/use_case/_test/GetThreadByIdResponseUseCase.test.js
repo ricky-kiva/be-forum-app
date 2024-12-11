@@ -3,18 +3,20 @@ const ThreadEntity = require('../../../Domains/threads/entities/ThreadEntity');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const GetThreadByIdResponseUseCase = require('../GetThreadByIdResponseUseCase');
 const ThreadCommentEntity = require('../../../Domains/thread_comments/entities/ThreadCommentEntity');
+const UserRepository = require('../../../Domains/users/UserRepository');
 
 describe('GetThreadByIdResponseUseCase', () => {
   it('should oscestrate get Thread by id action correctly', async () => {
     const threadId = 'thread-123';
-
+    const username = 'user123';
     const date = 'fixed-date';
+    const credentialId = 'user-123';
 
     const mockThreadEntity = new ThreadEntity({
       id: threadId,
       title: 'Thread title',
       body: 'Thread body',
-      owner: 'user-123',
+      owner: credentialId,
       date,
     });
 
@@ -22,7 +24,7 @@ describe('GetThreadByIdResponseUseCase', () => {
       new ThreadCommentEntity({
         id: 'comment-123',
         content: 'Thread body 123',
-        owner: 'user-123',
+        owner: credentialId,
         thread: threadId,
         date,
       }),
@@ -36,10 +38,14 @@ describe('GetThreadByIdResponseUseCase', () => {
     ];
 
     const mockThreadRepository = new ThreadRepository();
+    const mockUserRepository = new UserRepository();
     const mockThreadCommentRepository = new ThreadCommentRepository();
 
     mockThreadRepository.getThreadById = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadEntity));
+
+    mockUserRepository.getUsernameById = jest.fn()
+      .mockImplementation(() => Promise.resolve(username));
 
     mockThreadCommentRepository.getThreadCommentsByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadCommentEntities));
@@ -47,6 +53,7 @@ describe('GetThreadByIdResponseUseCase', () => {
     const getThreadByIdResponseUseCase = new GetThreadByIdResponseUseCase({
       threadRepository: mockThreadRepository,
       threadCommentRepository: mockThreadCommentRepository,
+      userRepository: mockUserRepository,
     });
 
     const threadEntity = await getThreadByIdResponseUseCase.execute(threadId);
@@ -57,14 +64,13 @@ describe('GetThreadByIdResponseUseCase', () => {
         title: mockThreadEntity.title,
         body: mockThreadEntity.body,
         date: mockThreadEntity.date,
+        owner: username,
         comments: mockThreadCommentEntities,
       },
     });
 
-    expect(mockThreadRepository.getThreadById)
-      .toHaveBeenCalledWith(threadId);
-
-    expect(mockThreadCommentRepository.getThreadCommentsByThreadId)
-      .toHaveBeenCalledWith(threadId);
+    expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith(threadId);
+    expect(mockUserRepository.getUsernameById).toHaveBeenCalledWith(credentialId);
+    expect(mockThreadCommentRepository.getThreadCommentsByThreadId).toHaveBeenCalledWith(threadId);
   });
 });

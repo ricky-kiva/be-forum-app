@@ -233,6 +233,10 @@ container.register([
           name: 'threadCommentRepository',
           internal: ThreadCommentRepository.name,
         },
+        {
+          name: 'userRepository',
+          internal: UserRepository.name,
+        },
       ],
     },
   },
