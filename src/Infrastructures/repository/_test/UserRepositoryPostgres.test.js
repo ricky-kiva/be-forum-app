@@ -1,5 +1,6 @@
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const RegisterUser = require('../../../Domains/users/entities/RegisterUser');
 const RegisteredUser = require('../../../Domains/users/entities/RegisteredUser');
 const pool = require('../../database/postgres/pool');
@@ -135,6 +136,18 @@ describe('UserRepositoryPostgres', () => {
       const resultUsername = await userRepositoryPostgres.getUsernameById(id);
 
       expect(resultUsername).toEqual(username);
+    });
+
+    it('should throw NotFoundError when there is no such username', async () => {
+      const id = 'user-123';
+      const unavailableId = 'user-321';
+
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      await UsersTableTestHelper.addUser({ id });
+
+      expect(userRepositoryPostgres.getUsernameById(unavailableId))
+        .rejects.toThrow(NotFoundError);
     });
   });
 });
