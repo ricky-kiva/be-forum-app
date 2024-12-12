@@ -17,17 +17,20 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
     const id = `comment-${this._idGenerator()}`;
 
     const q = {
-      text: 'INSERT INTO thread_comments VALUES($1, $2, $3, $4, DEFAULT, $5) RETURNING id, content, owner, thread, date',
+      text: `INSERT INTO thread_comments VALUES($1, $2, $3, $4, DEFAULT, $5) \
+      RETURNING id, content, owner, thread, is_delete, date
+      `,
       values: [id, content, credentialId, threadId, date],
     };
 
     const result = await this._pool.query(q);
 
-    const { thread: dbThreadId, ...rest } = result.rows[0];
+    const { thread: dbThreadId, is_delete: isDelete, ...rest } = result.rows[0];
 
     return new ThreadCommentEntity({
       ...rest,
       thread: dbThreadId,
+      isDelete,
     });
   }
 
@@ -40,14 +43,10 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
     const result = await this._pool.query(q);
 
     return result.rows.map((comment) => {
-      const { is_delete: isDelete, content, ...rest } = comment;
-
+      const { is_delete: isDelete, ...rest } = comment;
       return new ThreadCommentEntity({
         ...rest,
-        is_delete: isDelete,
-        content: isDelete
-          ? '**komentar telah dihapus**'
-          : content,
+        isDelete,
       });
     });
   }

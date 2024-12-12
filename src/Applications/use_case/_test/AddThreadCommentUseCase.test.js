@@ -13,6 +13,7 @@ describe('AddThreadCommentUseCase', () => {
     const threadCommentId = 'comment-123';
     const credentialId = 'user-123';
     const threadId = 'thread-123';
+    const isDelete = false;
     const date = 'fixed-date';
 
     const mockThreadCommentEntity = new ThreadCommentEntity({
@@ -20,6 +21,7 @@ describe('AddThreadCommentUseCase', () => {
       content: useCasePayload.content,
       owner: credentialId,
       thread: threadId,
+      isDelete,
       date,
     });
 

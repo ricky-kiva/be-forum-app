@@ -11,6 +11,7 @@ describe('GetThreadByIdResponseUseCase', () => {
     const username = 'user123';
     const date = 'fixed-date';
     const credentialId = 'user-123';
+    const isDelete = false;
 
     const mockThreadEntity = new ThreadEntity({
       id: threadId,
@@ -26,6 +27,7 @@ describe('GetThreadByIdResponseUseCase', () => {
         content: 'Thread body 123',
         owner: credentialId,
         thread: threadId,
+        isDelete,
         date,
       }),
       new ThreadCommentEntity({
@@ -33,6 +35,7 @@ describe('GetThreadByIdResponseUseCase', () => {
         content: 'Thread body 124',
         owner: 'user-124',
         thread: threadId,
+        isDelete,
         date,
       }),
     ];

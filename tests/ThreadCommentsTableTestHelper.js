@@ -6,11 +6,12 @@ const ThreadCommentsTableTestHelper = {
     content = 'Some thread comment',
     owner = 'user-123',
     thread = 'thread-123',
+    isDelete = false,
     date = 'fixed-date',
   }) {
     const q = {
-      text: 'INSERT INTO thread_comments VALUES($1, $2, $3, $4, DEFAULT, $5)',
-      values: [id, content, owner, thread, date],
+      text: 'INSERT INTO thread_comments VALUES($1, $2, $3, $4, $5, $6)',
+      values: [id, content, owner, thread, isDelete, date],
     };
 
     await pool.query(q);

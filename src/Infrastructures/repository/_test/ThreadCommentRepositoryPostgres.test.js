@@ -100,16 +100,19 @@ describe('ThreadCommentRepositoryPostgres', () => {
         fakeIdGenerator,
       );
 
-      const threadCommentEntity = await threadCommentRepositoryPostgres
-        .addThreadComment({
-          threadCommentPayload, credentialId, threadId, date,
-        });
+      const threadCommentEntity = await threadCommentRepositoryPostgres.addThreadComment({
+        threadCommentPayload,
+        credentialId,
+        threadId,
+        date,
+      });
 
       expect(threadCommentEntity).toStrictEqual(new ThreadCommentEntity({
         id: `comment-${idNumber}`,
         content: threadCommentPayload.content,
         owner: user.id,
         thread: thread.id,
+        isDelete: false,
         date,
       }));
     });
@@ -120,6 +123,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
       const idNumbers = ['123', '124'];
       const threadId = 'thread-123';
       const date = 'fixed-date';
+      const isDelete = false;
 
       const usernameTemplate = (id) => `User ${id}`;
       const passwordTemplate = (id) => `abc${id}`;
@@ -156,6 +160,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
           content: contentTemplate(idNumber),
           owner: userId,
           thread: threadId,
+          isDelete,
           date,
         };
 
@@ -184,6 +189,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
               content: contentTemplate(idNumbers[j]),
               owner: `user-${idNumbers[j]}`,
               thread: threadId,
+              isDelete,
               date,
             }));
           });
