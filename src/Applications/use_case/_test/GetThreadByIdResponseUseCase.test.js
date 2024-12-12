@@ -37,6 +37,23 @@ describe('GetThreadByIdResponseUseCase', () => {
       }),
     ];
 
+    const expectedComments = [
+      {
+        id: 'comment-123',
+        content: 'Thread body 123',
+        thread: threadId,
+        date,
+        username,
+      },
+      {
+        id: 'comment-124',
+        content: 'Thread body 124',
+        thread: threadId,
+        date,
+        username,
+      },
+    ];
+
     const mockThreadRepository = new ThreadRepository();
     const mockUserRepository = new UserRepository();
     const mockThreadCommentRepository = new ThreadCommentRepository();
@@ -64,8 +81,8 @@ describe('GetThreadByIdResponseUseCase', () => {
         title: mockThreadEntity.title,
         body: mockThreadEntity.body,
         date: mockThreadEntity.date,
-        owner: username,
-        comments: mockThreadCommentEntities,
+        username,
+        comments: expectedComments,
       },
     });
 
