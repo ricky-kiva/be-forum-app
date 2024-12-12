@@ -10,7 +10,7 @@ describe('ThreadCommentRepository interface', () => {
     await expect(threadCommentRepository.softDeleteThreadComment(''))
       .rejects.toThrow('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 
-    await expect(threadCommentRepository.getThreadCommentOwner(''))
+    await expect(threadCommentRepository.getThreadCommentOwnerById(''))
       .rejects.toThrow('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 
     await expect(threadCommentRepository.getThreadCommentsByThreadId(''))

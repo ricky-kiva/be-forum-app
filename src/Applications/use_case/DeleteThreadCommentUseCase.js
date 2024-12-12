@@ -10,7 +10,7 @@ class DeleteThreadCommentUseCase {
     await this._threadRepository.verifyThreadExists(threadId);
 
     const threadCommentOwner = await this._threadCommentRepository
-      .getThreadCommentOwner(threadCommentId);
+      .getThreadCommentOwnerById(threadCommentId);
 
     if (threadCommentOwner !== credentialId) {
       throw new AuthorizationError('thread comment bukan milik pengguna yang sedang login');

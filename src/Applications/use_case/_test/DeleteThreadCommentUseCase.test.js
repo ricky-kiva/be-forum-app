@@ -14,7 +14,7 @@ describe('DeleteThreadUseCase', () => {
     mockThreadRepository.verifyThreadExists = jest.fn()
       .mockImplementation(() => Promise.resolve());
 
-    mockThreadCommentRepository.getThreadCommentOwner = jest.fn()
+    mockThreadCommentRepository.getThreadCommentOwnerById = jest.fn()
       .mockImplementation(() => Promise.resolve(credentialId));
 
     mockThreadCommentRepository.softDeleteThreadComment = jest.fn()
@@ -28,7 +28,7 @@ describe('DeleteThreadUseCase', () => {
     await deleteThreadCommentUseCase.execute(credentialId, threadId, threadCommentId);
 
     expect(mockThreadRepository.verifyThreadExists).toBeCalledWith(threadId);
-    expect(mockThreadCommentRepository.getThreadCommentOwner).toBeCalledWith(threadCommentId);
+    expect(mockThreadCommentRepository.getThreadCommentOwnerById).toBeCalledWith(threadCommentId);
     expect(mockThreadCommentRepository.softDeleteThreadComment).toBeCalledWith(threadCommentId);
   });
 });

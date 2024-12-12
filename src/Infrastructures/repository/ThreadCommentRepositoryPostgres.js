@@ -65,7 +65,7 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
     }
   }
 
-  async getThreadCommentOwner(id) {
+  async getThreadCommentOwnerById(id) {
     const q = {
       text: 'SELECT owner FROM thread_comments WHERE id = $1',
       values: [id],
