@@ -38,9 +38,9 @@ describe('AddThreadUseCase', () => {
       threadRepository: mockThreadRepository,
     });
 
-    const threadEntity = await addThreadUseCase.execute({ useCasePayload, credentialId });
+    const threadResult = await addThreadUseCase.execute({ useCasePayload, credentialId });
 
-    expect(threadEntity).toStrictEqual({
+    expect(threadResult).toStrictEqual({
       id,
       title: useCasePayload.title,
       owner: credentialId,
