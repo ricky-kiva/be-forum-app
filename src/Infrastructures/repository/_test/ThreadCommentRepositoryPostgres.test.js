@@ -194,4 +194,23 @@ describe('ThreadCommentRepositoryPostgres', () => {
       await Promise.all(runTest);
     });
   });
+
+  describe('getThreadCommentOwnerById', () => {
+    it('should return a correct comment owner', async () => {
+      const commentId = 'comment-123';
+      const threadId = 'thread-123';
+      const credentialId = 'user-123';
+
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(pool, {});
+
+      await UsersTableTestHelper.addUser({ id: credentialId });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: credentialId });
+      await ThreadCommentsTableTestHelper
+        .addThreadComment({ id: commentId, owner: credentialId, thread: threadId });
+
+      const owner = await threadCommentRepositoryPostgres.getThreadCommentOwnerById(commentId);
+
+      expect(owner).toEqual(credentialId);
+    });
+  });
 });
