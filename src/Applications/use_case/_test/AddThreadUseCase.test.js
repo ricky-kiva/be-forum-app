@@ -5,6 +5,12 @@ const AddThreadUseCase = require('../AddThreadUseCase');
 
 describe('AddThreadUseCase', () => {
   it('should oscestrate the add Thread action correctly', async () => {
+    const date = 'fixed-date';
+
+    jest
+      .spyOn(Date.prototype, 'toISOString')
+      .mockImplementation(() => date);
+
     const useCasePayload = {
       title: 'Cool Dino Facts?',
       body: 'What is your favorite dinosaur and why?',
@@ -12,7 +18,6 @@ describe('AddThreadUseCase', () => {
 
     const id = 'thread-123';
     const credentialId = 'user-123';
-    const date = 'fixed-date';
 
     const mockThreadEntity = new ThreadEntity({
       id,
@@ -31,15 +36,20 @@ describe('AddThreadUseCase', () => {
       threadRepository: mockThreadRepository,
     });
 
-    const threadEntity = await addThreadUseCase.execute({ useCasePayload, credentialId, date });
+    const threadEntity = await addThreadUseCase.execute({ useCasePayload, credentialId });
 
-    expect(threadEntity).toStrictEqual(mockThreadEntity);
+    expect(threadEntity).toStrictEqual({
+      id,
+      title: useCasePayload.title,
+      owner: credentialId,
+    });
 
-    expect(mockThreadRepository.addThread)
-      .toHaveBeenCalledWith({
-        threadPayload: new ThreadPayload(useCasePayload),
-        credentialId,
-        date,
-      });
+    expect(mockThreadRepository.addThread).toHaveBeenCalledWith({
+      threadPayload: new ThreadPayload(useCasePayload),
+      credentialId,
+      date,
+    });
+
+    jest.restoreAllMocks();
   });
 });

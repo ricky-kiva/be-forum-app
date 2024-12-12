@@ -12,23 +12,15 @@ class ThreadsHandler {
   async postThread(req, h) {
     const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
     const { id: credentialId } = req.auth.credentials;
-    const date = new Date().toISOString();
 
-    const threadEntity = await addThreadUseCase.execute({
+    const addedThread = await addThreadUseCase.execute({
       useCasePayload: req.payload,
       credentialId,
-      date,
     });
 
     const res = h.response({
       status: 'success',
-      data: {
-        addedThread: {
-          id: threadEntity.id,
-          title: threadEntity.title,
-          owner: threadEntity.owner,
-        },
-      },
+      data: { addedThread },
     });
 
     res.code(201);

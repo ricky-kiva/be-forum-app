@@ -5,10 +5,18 @@ class AddThreadUseCase {
     this._threadRepository = threadRepository;
   }
 
-  async execute({ useCasePayload, credentialId, date }) {
+  async execute({ useCasePayload, credentialId }) {
     const threadPayload = new ThreadPayload(useCasePayload);
+    const date = new Date().toISOString();
 
-    return this._threadRepository.addThread({ threadPayload, credentialId, date });
+    const threadEntity = await this._threadRepository
+      .addThread({ threadPayload, credentialId, date });
+
+    return {
+      id: threadEntity.id,
+      title: threadEntity.title,
+      owner: threadEntity.owner,
+    };
   }
 }
 
