@@ -39,6 +39,39 @@ describe('ThreadRepositoryPostgres', () => {
 
       const date = 'fixed-date';
 
+      await threadRepositoryPostgres.addThread({
+        threadPayload,
+        credentialId: registerUser.id,
+        date,
+      });
+
+      const threads = await ThreadsTableTestHelper.getThreadById(`thread-${threadId}`);
+
+      expect(threads).toHaveLength(1);
+    });
+
+    it('should return created Thread correctly', async () => {
+      const threadPayload = new ThreadPayload({
+        title: 'Example title',
+        body: 'Example thread body',
+      });
+
+      const registerUser = {
+        id: 'user-123',
+        username: 'komodo',
+        password: 'secret',
+        fullname: 'Komodo Indonesia',
+      };
+
+      await UsersTableTestHelper.addUser(registerUser);
+
+      const threadId = '123';
+      const fakeIdGenerator = () => threadId;
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+
+      const date = 'fixed-date';
+
       const threadEntity = await threadRepositoryPostgres.addThread({
         threadPayload,
         credentialId: registerUser.id,
