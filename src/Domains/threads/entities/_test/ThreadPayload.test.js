@@ -23,4 +23,16 @@ describe('a ThreadPayload entities', () => {
 
     expect(() => new ThreadPayload(payload)).toThrow('THREAD_PAYLOAD.TITLE_LIMIT_CHAR');
   });
+
+  it('should create Thread Payload object correctly', () => {
+    const payload = {
+      title: 'Thread Title',
+      body: 'Thread body',
+    };
+
+    const threadPayload = new ThreadPayload(payload);
+
+    expect(threadPayload.title).toEqual(payload.title);
+    expect(threadPayload.body).toEqual(payload.body);
+  });
 });
