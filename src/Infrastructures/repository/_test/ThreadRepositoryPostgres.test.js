@@ -93,8 +93,6 @@ describe('ThreadRepositoryPostgres', () => {
       const userId = 'user-123';
       const threadId = 'thread-123';
 
-      const fakeIdGenerator = () => threadId;
-
       const registerUser = {
         id: userId,
         username: 'komodo',
@@ -113,11 +111,19 @@ describe('ThreadRepositoryPostgres', () => {
       await UsersTableTestHelper.addUser(registerUser);
       await ThreadsTableTestHelper.addThread(thread);
 
-      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
       const threadEntity = await threadRepositoryPostgres.getThreadById(threadId);
 
       expect(threadEntity).toStrictEqual(new ThreadEntity(thread));
+    });
+
+    it('should throw NotFoundError when there is no such Thread', async () => {
+      const unavailableId = 'thread-123';
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      expect(threadRepositoryPostgres.getThreadById(unavailableId))
+        .rejects.toThrow(NotFoundError);
     });
   });
 
