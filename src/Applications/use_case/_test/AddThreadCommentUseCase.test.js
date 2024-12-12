@@ -6,15 +6,22 @@ const AddThreadCommentUseCase = require('../AddThreadCommentUseCase');
 
 describe('AddThreadCommentUseCase', () => {
   it('should oscestrate the add Thread Comment action correctly', async () => {
+    const mockThreadCommentRepository = new ThreadCommentRepository();
+    const mockThreadRepository = new ThreadRepository();
+
     const useCasePayload = {
       content: 'Some comment',
     };
 
-    const threadCommentId = 'comment-123';
     const credentialId = 'user-123';
     const threadId = 'thread-123';
-    const isDelete = false;
     const date = 'fixed-date';
+
+    mockThreadRepository.verifyThreadExists = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+
+    const threadCommentId = 'comment-123';
+    const isDelete = false;
 
     const mockThreadCommentEntity = new ThreadCommentEntity({
       id: threadCommentId,
@@ -25,11 +32,7 @@ describe('AddThreadCommentUseCase', () => {
       date,
     });
 
-    const mockThreadCommentRepository = new ThreadCommentRepository();
-    const mockThreadRepository = new ThreadRepository();
-
-    mockThreadRepository.verifyThreadExists = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+    const mockThreadCommentPayload = new ThreadCommentPayload(useCasePayload);
 
     mockThreadCommentRepository.addThreadComment = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadCommentEntity));
@@ -39,16 +42,25 @@ describe('AddThreadCommentUseCase', () => {
       threadRepository: mockThreadRepository,
     });
 
-    const threadCommentEntity = await addThreadCommentUseCase
-      .execute({
-        useCasePayload, credentialId, threadId, date,
-      });
+    const threadCommentEntity = await addThreadCommentUseCase.execute({
+      useCasePayload,
+      credentialId,
+      threadId,
+      date,
+    });
 
-    expect(threadCommentEntity).toStrictEqual(mockThreadCommentEntity);
+    expect(threadCommentEntity).toStrictEqual(new ThreadCommentEntity({
+      id: threadCommentId,
+      content: useCasePayload.content,
+      owner: credentialId,
+      thread: threadId,
+      isDelete,
+      date,
+    }));
 
     expect(mockThreadCommentRepository.addThreadComment)
       .toHaveBeenCalledWith({
-        threadCommentPayload: new ThreadCommentPayload(useCasePayload),
+        threadCommentPayload: mockThreadCommentPayload,
         credentialId,
         threadId,
         date,
