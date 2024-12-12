@@ -4,12 +4,12 @@ const DeleteThreadCommentUseCase = require('../DeleteThreadCommentUseCase');
 
 describe('DeleteThreadCommentUseCase', () => {
   it('should oscestrate the soft delete Thread action property', async () => {
+    const mockThreadRepository = new ThreadRepository();
+    const mockThreadCommentRepository = new ThreadCommentRepository();
+
     const credentialId = 'user-123';
     const threadId = 'thread-123';
     const threadCommentId = 'comment-123';
-
-    const mockThreadRepository = new ThreadRepository();
-    const mockThreadCommentRepository = new ThreadCommentRepository();
 
     mockThreadRepository.verifyThreadExists = jest.fn()
       .mockImplementation(() => Promise.resolve());
@@ -33,13 +33,12 @@ describe('DeleteThreadCommentUseCase', () => {
   });
 
   it('shoud return Application Error if Thread Comment do not belong to logged user', async () => {
-    const otherUser = 'user-321';
+    const mockThreadRepository = new ThreadRepository();
+    const mockThreadCommentRepository = new ThreadCommentRepository();
+
     const credentialId = 'user-123';
     const threadId = 'thread-123';
     const threadCommentId = 'comment-123';
-
-    const mockThreadRepository = new ThreadRepository();
-    const mockThreadCommentRepository = new ThreadCommentRepository();
 
     mockThreadRepository.verifyThreadExists = jest.fn()
       .mockImplementation(() => Promise.resolve());
@@ -54,6 +53,8 @@ describe('DeleteThreadCommentUseCase', () => {
       threadCommentRepository: mockThreadCommentRepository,
       threadRepository: mockThreadRepository,
     });
+
+    const otherUser = 'user-321';
 
     expect(deleteThreadCommentUseCase.execute(otherUser, threadId, threadCommentId))
       .rejects.toThrowError('DELETE_THREAD_COMMENT_USE_CASE.COMMENT_DO_NOT_BELONG_TO_LOGGED_USER');
