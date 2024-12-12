@@ -11,17 +11,16 @@ class GetThreadByIdResponseUseCase {
     const threadCommentEntities = await this._threadCommentRepository
       .getThreadCommentsByThreadId(id);
 
-    const softDeleteMappedThreadComments = threadCommentEntities.map((comment) => ({
+    const mapThreadCommentsToUseCase = threadCommentEntities.map((comment) => ({
       id: comment.id,
       content: comment.isDelete
         ? '**komentar telah dihapus**'
         : comment.content,
       owner: comment.owner,
-      thread: comment.thread,
       date: comment.date,
     }));
 
-    const assignThreadCommentsUsername = softDeleteMappedThreadComments.map(async (comment) => {
+    const assignThreadCommentsUsername = mapThreadCommentsToUseCase.map(async (comment) => {
       const { owner, ...rest } = comment;
       const commentator = await this._userRepository.getUsernameById(owner);
 
