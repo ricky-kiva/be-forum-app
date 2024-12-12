@@ -21,4 +21,22 @@ describe('a ThreadCommentEntity entities', () => {
 
     expect(() => new ThreadCommentEntity(payload)).toThrow('THREAD_COMMENT_ENTITY.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
+
+  it('should create Thread Comment Entity object correctly', () => {
+    const payload = {
+      id: 'comment-123',
+      content: 'Thread comment content',
+      owner: 'user-123',
+      thread: 'thread-123',
+      date: 'fixed-date',
+    };
+
+    const threadCommentEntity = new ThreadCommentEntity(payload);
+
+    expect(threadCommentEntity.id).toEqual(payload.id);
+    expect(threadCommentEntity.content).toEqual(payload.content);
+    expect(threadCommentEntity.owner).toEqual(payload.owner);
+    expect(threadCommentEntity.thread).toEqual(payload.thread);
+    expect(threadCommentEntity.date).toEqual(payload.date);
+  });
 });
