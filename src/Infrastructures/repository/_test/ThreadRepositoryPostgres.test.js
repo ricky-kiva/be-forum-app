@@ -4,6 +4,7 @@ const pool = require('../../database/postgres/pool');
 const ThreadPayload = require('../../../Domains/threads/entities/ThreadPayload');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const ThreadEntity = require('../../../Domains/threads/entities/ThreadEntity');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('ThreadRepositoryPostgres', () => {
   afterEach(async () => {
@@ -84,6 +85,22 @@ describe('ThreadRepositoryPostgres', () => {
       const threadEntity = await threadRepositoryPostgres.getThreadById(threadId);
 
       expect(threadEntity).toStrictEqual(new ThreadEntity(thread));
+    });
+  });
+
+  describe('verifyThreadExists', () => {
+    it('should throw InvariantError when thread not available', async () => {
+      const availableThreadId = 'thread-123';
+      const nonAvailableThreadId = 'thread-124';
+      const credentialId = 'user-123';
+
+      await UsersTableTestHelper.addUser({ id: credentialId });
+      await ThreadsTableTestHelper.addThread({ id: availableThreadId, owner: credentialId });
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      await expect(threadRepositoryPostgres.verifyThreadExists(nonAvailableThreadId))
+        .rejects.toThrowError(NotFoundError);
     });
   });
 });
