@@ -60,8 +60,8 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
 
     const result = await this._pool.query(q);
 
-    if (result.rows.length === 0 || !result.rows[0].is_delete) {
-      throw new Error('proses delete thread comment gagal');
+    if (result.rows.length === 0) {
+      throw new NotFoundError('thread comment tidak ditemukan');
     }
   }
 
