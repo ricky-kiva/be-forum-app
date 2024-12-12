@@ -139,12 +139,8 @@ describe('UserRepositoryPostgres', () => {
     });
 
     it('should throw NotFoundError when there is no such username', async () => {
-      const id = 'user-123';
       const unavailableId = 'user-321';
-
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
-
-      await UsersTableTestHelper.addUser({ id });
 
       expect(userRepositoryPostgres.getUsernameById(unavailableId))
         .rejects.toThrow(NotFoundError);
