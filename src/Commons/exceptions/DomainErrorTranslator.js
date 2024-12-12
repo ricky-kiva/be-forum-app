@@ -1,4 +1,5 @@
 const InvariantError = require('./InvariantError');
+const AuthorizationError = require('./AuthorizationError');
 
 const DomainErrorTranslator = {
   translate(error) {
@@ -22,6 +23,7 @@ DomainErrorTranslator._directories = {
   'THREAD_PAYLOAD.TITLE_LIMIT_CHAR': new InvariantError('karakter judul thread melebihi batas limit'),
   'THREAD_COMMENT_PAYLOAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti payload thread comment kurang'),
   'THREAD_COMMENT_PAYLOAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe properti data payload thread comment tidak sesuai'),
+  'DELETE_THREAD_COMMENT_USE_CASE.COMMENT_DO_NOT_BELONG_TO_LOGGED_USER': new AuthorizationError('thread comment bukan milik pengguna yang sedang login'),
 };
 
 module.exports = DomainErrorTranslator;
