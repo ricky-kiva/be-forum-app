@@ -5,6 +5,7 @@ const pool = require('../../database/postgres/pool');
 const ThreadCommentPayload = require('../../../Domains/thread_comments/entities/ThreadCommentPayload');
 const ThreadCommentRepositoryPostgres = require('../ThreadCommentRepositoryPostgres');
 const ThreadCommentEntity = require('../../../Domains/thread_comments/entities/ThreadCommentEntity');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('ThreadCommentRepositoryPostgres', () => {
   afterEach(async () => {
@@ -114,57 +115,6 @@ describe('ThreadCommentRepositoryPostgres', () => {
     });
   });
 
-  describe('softDeleteThreadComment function', () => {
-    it('should change is_delete value of corresponding thread comment', async () => {
-      const idNumber = '123';
-      const fakeIdGenerator = () => idNumber;
-
-      const userId = 'user-123';
-      const threadId = 'thread-123';
-      const threadCommentId = 'comment-123';
-
-      const user = {
-        id: userId,
-        username: 'komodo',
-        password: 'secret',
-        fullname: 'Komodo Indonesia',
-      };
-
-      const thread = {
-        id: threadId,
-        title: 'Thread Example',
-        body: 'Thread body example',
-        owner: userId,
-      };
-
-      const threadComment = {
-        id: threadCommentId,
-        content: 'Some thread comment',
-        owner: userId,
-        thread: threadId,
-      };
-
-      await UsersTableTestHelper.addUser(user);
-      await ThreadsTableTestHelper.addThread(thread);
-      await ThreadCommentsTableTestHelper.addThreadComment(threadComment);
-
-      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(
-        pool,
-        fakeIdGenerator,
-      );
-
-      await threadCommentRepositoryPostgres
-        .softDeleteThreadComment(`comment-${idNumber}`);
-
-      const deletedThreadComment = await ThreadCommentsTableTestHelper
-        .findThreadCommentsById(threadCommentId);
-
-      const { is_delete: isDelete } = deletedThreadComment[0];
-
-      expect(isDelete).toStrictEqual(true);
-    });
-  });
-
   describe('getThreadCommentsByThreadId function', () => {
     it('should return a correct value of Thread Comments', async () => {
       const idNumbers = ['123', '124'];
@@ -241,6 +191,59 @@ describe('ThreadCommentRepositoryPostgres', () => {
       });
 
       await Promise.all(runTest);
+    });
+  });
+
+  describe('softDeleteThreadComment function', () => {
+    it('should change is_delete value of corresponding thread comment', async () => {
+      const userId = 'user-123';
+      const threadId = 'thread-123';
+      const threadCommentId = 'comment-123';
+
+      const user = {
+        id: userId,
+        username: 'komodo',
+        password: 'secret',
+        fullname: 'Komodo Indonesia',
+      };
+
+      const thread = {
+        id: threadId,
+        title: 'Thread Example',
+        body: 'Thread body example',
+        owner: userId,
+      };
+
+      const threadComment = {
+        id: threadCommentId,
+        content: 'Some thread comment',
+        owner: userId,
+        thread: threadId,
+      };
+
+      await UsersTableTestHelper.addUser(user);
+      await ThreadsTableTestHelper.addThread(thread);
+      await ThreadCommentsTableTestHelper.addThreadComment(threadComment);
+
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(pool, {});
+
+      await threadCommentRepositoryPostgres
+        .softDeleteThreadComment(threadCommentId);
+
+      const deletedThreadComment = await ThreadCommentsTableTestHelper
+        .findThreadCommentsById(threadCommentId);
+
+      const { is_delete: isDelete } = deletedThreadComment[0];
+
+      expect(isDelete).toStrictEqual(true);
+    });
+
+    it('should throw NotFoundError when there is no such Thread Comment', async () => {
+      const unavailableId = 'comment-321';
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(pool, {});
+
+      expect(threadCommentRepositoryPostgres.softDeleteThreadComment(unavailableId))
+        .rejects.toThrowError(NotFoundError);
     });
   });
 
