@@ -58,12 +58,11 @@ describe('AddThreadCommentUseCase', () => {
       date,
     }));
 
-    expect(mockThreadCommentRepository.addThreadComment)
-      .toHaveBeenCalledWith({
-        threadCommentPayload: mockThreadCommentPayload,
-        credentialId,
-        threadId,
-        date,
-      });
+    expect(mockThreadCommentRepository.addThreadComment).toHaveBeenCalledWith({
+      threadCommentPayload: mockThreadCommentPayload,
+      credentialId,
+      threadId,
+      date,
+    });
   });
 });
