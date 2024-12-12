@@ -18,7 +18,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
   });
 
   describe('addThreadComment function', () => {
-    it('should persist thread comment', async () => {
+    it('should persist Thread Comment', async () => {
       const threadCommentPayload = new ThreadCommentPayload({
         content: 'Example thread comment',
       });
@@ -62,6 +62,55 @@ describe('ThreadCommentRepositoryPostgres', () => {
         .findThreadCommentsById(`comment-${idNumber}`);
 
       expect(threadComments).toHaveLength(1);
+    });
+
+    it('should acquire a correct single Thread Comment', async () => {
+      const threadCommentPayload = new ThreadCommentPayload({
+        content: 'Example thread comment',
+      });
+
+      const idNumber = '123';
+      const fakeIdGenerator = () => idNumber;
+
+      const credentialId = 'user-123';
+      const threadId = 'thread-123';
+      const date = 'fixed-date';
+
+      const user = {
+        id: credentialId,
+        username: 'komodo',
+        password: 'secret',
+        fullname: 'Komodo Indonesia',
+      };
+
+      const thread = {
+        id: threadId,
+        title: 'Thread Example',
+        body: 'Thread body example',
+        owner: credentialId,
+        date,
+      };
+
+      await UsersTableTestHelper.addUser(user);
+      await ThreadsTableTestHelper.addThread(thread);
+
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator,
+      );
+
+      const threadCommentEntity = await threadCommentRepositoryPostgres
+        .addThreadComment({
+          threadCommentPayload, credentialId, threadId, date,
+        });
+
+      expect(threadCommentEntity).toStrictEqual(new ThreadCommentEntity({
+        id: `comment-${idNumber}`,
+        content: threadCommentPayload.content,
+        owner: user.id,
+        thread: thread.id,
+        date,
+      }));
     });
   });
 
