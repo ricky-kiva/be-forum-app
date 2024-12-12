@@ -5,19 +5,23 @@ const AddThreadUseCase = require('../AddThreadUseCase');
 
 describe('AddThreadUseCase', () => {
   it('should oscestrate the add Thread action correctly', async () => {
+    const mockThreadRepository = new ThreadRepository();
+
+    const credentialId = 'user-123';
+    const useCasePayload = {
+      title: 'Cool Dino Facts?',
+      body: 'What is your favorite dinosaur and why?',
+    };
+
+    const mockThreadPayload = new ThreadPayload(useCasePayload);
+
     const date = 'fixed-date';
 
     jest
       .spyOn(Date.prototype, 'toISOString')
       .mockImplementation(() => date);
 
-    const useCasePayload = {
-      title: 'Cool Dino Facts?',
-      body: 'What is your favorite dinosaur and why?',
-    };
-
     const id = 'thread-123';
-    const credentialId = 'user-123';
 
     const mockThreadEntity = new ThreadEntity({
       id,
@@ -26,8 +30,6 @@ describe('AddThreadUseCase', () => {
       owner: credentialId,
       date,
     });
-
-    const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.addThread = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadEntity));
@@ -45,7 +47,7 @@ describe('AddThreadUseCase', () => {
     });
 
     expect(mockThreadRepository.addThread).toHaveBeenCalledWith({
-      threadPayload: new ThreadPayload(useCasePayload),
+      threadPayload: mockThreadPayload,
       credentialId,
       date,
     });
