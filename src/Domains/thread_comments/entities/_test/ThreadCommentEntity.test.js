@@ -16,6 +16,7 @@ describe('a ThreadCommentEntity entities', () => {
       content: 123,
       owner: 'user-123',
       thread: 'thread-123',
+      isDelete: false,
       date: 'fixed-date',
     };
 
@@ -28,6 +29,7 @@ describe('a ThreadCommentEntity entities', () => {
       content: 'Thread comment content',
       owner: 'user-123',
       thread: 'thread-123',
+      isDelete: false,
       date: 'fixed-date',
     };
 
@@ -37,6 +39,7 @@ describe('a ThreadCommentEntity entities', () => {
     expect(threadCommentEntity.content).toEqual(payload.content);
     expect(threadCommentEntity.owner).toEqual(payload.owner);
     expect(threadCommentEntity.thread).toEqual(payload.thread);
+    expect(threadCommentEntity.isDelete).toEqual(payload.isDelete);
     expect(threadCommentEntity.date).toEqual(payload.date);
   });
 });
