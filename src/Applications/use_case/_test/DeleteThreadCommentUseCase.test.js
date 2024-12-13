@@ -32,7 +32,7 @@ describe('DeleteThreadCommentUseCase', () => {
     expect(mockThreadCommentRepository.softDeleteThreadComment).toBeCalledWith(threadCommentId);
   });
 
-  it('shoud return Application Error if Thread Comment do not belong to logged user', async () => {
+  it('should return Application Error if Thread Comment do not belong to logged user', async () => {
     const mockThreadRepository = new ThreadRepository();
     const mockThreadCommentRepository = new ThreadCommentRepository();
 
@@ -46,9 +46,6 @@ describe('DeleteThreadCommentUseCase', () => {
     mockThreadCommentRepository.getThreadCommentOwnerById = jest.fn()
       .mockImplementation(() => Promise.resolve(credentialId));
 
-    mockThreadCommentRepository.softDeleteThreadComment = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-
     const deleteThreadCommentUseCase = new DeleteThreadCommentUseCase({
       threadCommentRepository: mockThreadCommentRepository,
       threadRepository: mockThreadRepository,
@@ -56,7 +53,11 @@ describe('DeleteThreadCommentUseCase', () => {
 
     const otherUser = 'user-321';
 
-    expect(deleteThreadCommentUseCase.execute(otherUser, threadId, threadCommentId))
+    await expect(deleteThreadCommentUseCase.execute(otherUser, threadId, threadCommentId))
       .rejects.toThrowError('DELETE_THREAD_COMMENT_USE_CASE.COMMENT_DO_NOT_BELONG_TO_LOGGED_USER');
+
+    expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(threadId);
+    expect(mockThreadCommentRepository.getThreadCommentOwnerById)
+      .toHaveBeenCalledWith(threadCommentId);
   });
 });
