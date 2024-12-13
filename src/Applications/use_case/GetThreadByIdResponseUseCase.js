@@ -8,19 +8,10 @@ class GetThreadByIdResponseUseCase {
   async execute(id) {
     const threadEntity = await this._threadRepository.getThreadById(id);
     const username = await this._userRepository.getUsernameById(threadEntity.owner);
-    const threadCommentEntities = await this._threadCommentRepository
-      .getThreadCommentsByThreadId(id);
 
-    const mapThreadCommentsToUseCase = threadCommentEntities.map((comment) => ({
-      id: comment.id,
-      content: comment.isDelete
-        ? '**komentar telah dihapus**'
-        : comment.content,
-      owner: comment.owner,
-      date: comment.date,
-    }));
+    const propMappedThreadComments = await this._mapThreadCommentsProp(id);
 
-    const assignThreadCommentsUsername = mapThreadCommentsToUseCase.map(async (comment) => {
+    const assignThreadCommentsUsername = propMappedThreadComments.map(async (comment) => {
       const { owner, ...rest } = comment;
       const commentator = await this._userRepository.getUsernameById(owner);
 
@@ -42,6 +33,20 @@ class GetThreadByIdResponseUseCase {
         comments,
       },
     };
+  }
+
+  async _mapThreadCommentsProp(threadId) {
+    const threadCommentEntities = await this._threadCommentRepository
+      .getThreadCommentsByThreadId(threadId);
+
+    return threadCommentEntities.map((comment) => ({
+      id: comment.id,
+      content: comment.isDelete
+        ? '**komentar telah dihapus**'
+        : comment.content,
+      owner: comment.owner,
+      date: comment.date,
+    }));
   }
 }
 
