@@ -270,5 +270,14 @@ describe('ThreadCommentRepositoryPostgres', () => {
 
       expect(owner).toEqual(credentialId);
     });
+
+    it('should throw NotFoundError when comment does not exist', async () => {
+      const unavailableCommentId = 'comment-124';
+
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(pool, {});
+
+      await expect(threadCommentRepositoryPostgres.getThreadCommentOwnerById(unavailableCommentId))
+        .rejects.toThrowError(NotFoundError);
+    });
   });
 });
