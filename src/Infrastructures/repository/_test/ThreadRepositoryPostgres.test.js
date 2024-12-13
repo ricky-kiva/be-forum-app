@@ -128,9 +128,17 @@ describe('ThreadRepositoryPostgres', () => {
   });
 
   describe('verifyThreadExists', () => {
-    it('should throw InvariantError when thread not available', async () => {
-      const availableThreadId = 'thread-123';
+    it('should throw NotFoundError when Thread is not available', async () => {
       const nonAvailableThreadId = 'thread-124';
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      await expect(threadRepositoryPostgres.verifyThreadExists(nonAvailableThreadId))
+        .rejects.toThrowError(NotFoundError);
+    });
+
+    it('should not throw error when Thread is available', async () => {
+      const availableThreadId = 'thread-123';
       const credentialId = 'user-123';
 
       await UsersTableTestHelper.addUser({ id: credentialId });
@@ -138,8 +146,8 @@ describe('ThreadRepositoryPostgres', () => {
 
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
-      await expect(threadRepositoryPostgres.verifyThreadExists(nonAvailableThreadId))
-        .rejects.toThrowError(NotFoundError);
+      await expect(threadRepositoryPostgres.verifyThreadExists(availableThreadId))
+        .resolves.not.toThrowError(NotFoundError);
     });
   });
 });
