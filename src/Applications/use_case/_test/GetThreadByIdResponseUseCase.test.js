@@ -150,7 +150,8 @@ describe('GetThreadByIdResponseUseCase', () => {
         });
       });
 
-      expect(mockThreadCommentRepository.getThreadCommentsByThreadId).toBeCalledWith(threadId);
+      expect(mockThreadCommentRepository.getThreadCommentsByThreadId)
+        .toHaveBeenCalledWith(threadId);
     });
   });
 });
