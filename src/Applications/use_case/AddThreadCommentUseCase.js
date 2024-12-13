@@ -7,16 +7,26 @@ class AddThreadCommentUseCase {
   }
 
   async execute({
-    useCasePayload, credentialId, threadId, date,
+    useCasePayload, credentialId, threadId,
   }) {
     await this._threadRepository.verifyThreadExists(threadId);
 
     const threadCommentPayload = new ThreadCommentPayload(useCasePayload);
+    const date = new Date().toISOString();
 
-    return this._threadCommentRepository
+    const threadCommentEntity = await this._threadCommentRepository
       .addThreadComment({
-        threadCommentPayload, credentialId, threadId, date,
+        threadCommentPayload,
+        credentialId,
+        threadId,
+        date,
       });
+
+    return {
+      id: threadCommentEntity.id,
+      content: threadCommentEntity.content,
+      owner: threadCommentEntity.owner,
+    };
   }
 }
 

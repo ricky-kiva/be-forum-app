@@ -15,13 +15,19 @@ describe('AddThreadCommentUseCase', () => {
 
     const credentialId = 'user-123';
     const threadId = 'thread-123';
-    const date = 'fixed-date';
 
     mockThreadRepository.verifyThreadExists = jest.fn()
       .mockImplementation(() => Promise.resolve());
 
+    const mockThreadCommentPayload = new ThreadCommentPayload(useCasePayload);
+
     const threadCommentId = 'comment-123';
     const isDelete = false;
+    const date = 'fixed-date';
+
+    jest
+      .spyOn(Date.prototype, 'toISOString')
+      .mockImplementation(() => date);
 
     const mockThreadCommentEntity = new ThreadCommentEntity({
       id: threadCommentId,
@@ -31,8 +37,6 @@ describe('AddThreadCommentUseCase', () => {
       isDelete,
       date,
     });
-
-    const mockThreadCommentPayload = new ThreadCommentPayload(useCasePayload);
 
     mockThreadCommentRepository.addThreadComment = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadCommentEntity));
@@ -49,20 +53,20 @@ describe('AddThreadCommentUseCase', () => {
       date,
     });
 
-    expect(threadCommentEntity).toStrictEqual(new ThreadCommentEntity({
+    expect(threadCommentEntity).toStrictEqual({
       id: threadCommentId,
       content: useCasePayload.content,
       owner: credentialId,
-      thread: threadId,
-      isDelete,
-      date,
-    }));
+    });
 
+    expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(threadId);
     expect(mockThreadCommentRepository.addThreadComment).toHaveBeenCalledWith({
       threadCommentPayload: mockThreadCommentPayload,
       credentialId,
       threadId,
       date,
     });
+
+    jest.restoreAllMocks();
   });
 });
